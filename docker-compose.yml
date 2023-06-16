@@ -12,6 +12,8 @@ services:
     environment:
       SERVICE_NAME: php
     working_dir: /var/www
+    ports:
+      - "8002:8000"
     volumes:
       - ${WWW_ROOT_FOLDER}:/var/www
     networks:
@@ -45,8 +47,6 @@ services:
       - "80:80"
       - "443:443"
       - "8001:8000"
-    expose:
-      - "8001"
     volumes:
       - ${WWW_ROOT_FOLDER}:/var/www
     networks:
@@ -57,13 +57,23 @@ services:
     image: phpmyadmin
     container_name: phpmyadmin
     restart: always
-    expose:
-      - "8080"
     ports:
       - "8080:80"
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306
+    networks:
+      - app-network
+
+  #node
+  node:
+    image: node
+    container_name: node
+    restart: unless-stopped
+    tty: true
+    working_dir: /src/  
+    volumes:
+      - ${WWW_ROOT_FOLDER}:/src/
     networks:
       - app-network
 
